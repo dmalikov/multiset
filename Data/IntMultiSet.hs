@@ -127,8 +127,8 @@ module Data.IntMultiSet  (
             ) where
 
 import Prelude hiding (filter,foldr,null,map,concatMap)
+import Data.Maybe (fromMaybe)
 import Data.Monoid (Monoid(..))
-import Data.Typeable ()
 import Data.IntMap (IntMap)
 import Data.IntSet (IntSet)
 import Data.MultiSet (MultiSet)
@@ -384,8 +384,7 @@ maxView x
 
 -- | The union of a list of multisets: (@'unions' == 'foldl' 'union' 'empty'@).
 unions :: [IntMultiSet] -> IntMultiSet
-unions ts
-  = foldlStrict union empty ts
+unions = foldlStrict union empty
 
 -- | /O(n+m)/. The union of two multisets. The union adds the occurences together.
 --
@@ -493,8 +492,7 @@ bind = flip unionsMap
 
 -- | /O(t)/. Fold over the elements of a multiset in an unspecified order.
 fold :: (Key -> b -> b) -> b -> IntMultiSet -> b
-fold f z s
-  = foldr f z s
+fold = foldr
 
 -- | /O(t)/. Post-order fold.
 foldr :: (Key -> b -> b) -> b -> IntMultiSet -> b
@@ -682,7 +680,7 @@ split a = (\(x,y) -> (MS x, MS y)) . Map.split a . unMS
 -- occurences of the pivot element in the original set.
 splitOccur :: Int -> IntMultiSet -> (IntMultiSet,Int,IntMultiSet)
 splitOccur a (MS t) = let (l,m,r) = Map.splitLookup a t in
-     (MS l, maybe 0 id m, MS r)
+     (MS l, fromMaybe 0 m, MS r)
 
 {--------------------------------------------------------------------
   Utilities
@@ -702,7 +700,7 @@ foldlStrict f z xs
 -- | /O(n)/. Show the tree that implements the set. The tree is shown
 -- in a compressed, hanging format.
 showTree :: IntMultiSet -> String
-showTree s = showTreeWith True False s
+showTree = showTreeWith True False
 
 
 {- | /O(n)/. The expression (@showTreeWith hang wide map@) shows
