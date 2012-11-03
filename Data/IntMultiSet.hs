@@ -325,7 +325,7 @@ deleteMin :: IntMultiSet -> IntMultiSet
 deleteMin (MS m) = case Map.minView m of
                       Nothing     -> empty
                       Just (1,m') -> MS m'
-                      Just (_,m') -> MS $ Map.updateMin pred m'
+                      Just (_,m') -> MS $ Map.updateMin (return . pred) m'
 
 -- | /O(log n)/. Delete the maximal element.
 deleteMax :: IntMultiSet -> IntMultiSet
@@ -333,7 +333,7 @@ deleteMax :: IntMultiSet -> IntMultiSet
 deleteMax (MS m) = case Map.maxView m of
                       Nothing     -> empty
                       Just (1,m') -> MS m'
-                      Just (_,m') -> MS $ Map.updateMax pred m'
+                      Just (_,m') -> MS $ Map.updateMax (return . pred) m'
 
 -- | /O(log n)/. Delete all occurences of the minimal element.
 deleteMinAll :: IntMultiSet -> IntMultiSet
